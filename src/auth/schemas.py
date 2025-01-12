@@ -20,5 +20,7 @@ class UserModel(BaseModel):
     password: str = Field(exclude=True)  # Exclude password from response
     created_at : datetime.datetime
     updated_at : datetime.datetime
-    class Config:
-        orm_mode = True  # Enable ORM mode to work with SQLAlchemy models
+
+class UserLoginModel(BaseModel):
+    email: str
+    password: str
