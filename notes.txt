@@ -1,0 +1,20 @@
+* Alembic:
+
+- It is a tool that allows us to work with SQLAlchemy and ORMS that uses SQLAlchemy for us to be able to carry out database
+migrations on our SQL database.
+
+- Helps us to crete migration env using templates.
+
+* Importance of migration:
+
+- It help us to make changes to our database without having to lose data.
+
+* Migration Env:
+
+- Env which help us to run our migrations, inside this migration env we get to create versions or files that describes
+the changes we have been able to do on our DB with time.
+
+- So whenever we are creating a change to our db we are going to create a migration, and that migration will be refected
+inside a file. That file will be called as the version file and inside that file will be the changes to the structure of
+the db that we are suggesting and onces we have been able to suggest those changes then we shall finally go ahead and make
+those changes refect within our database.
