@@ -8,14 +8,16 @@ from src.books.models import BookModel
 from src.books.service import BookService
 from src.db.main import get_session
 from typing import List
+from src.auth.dependencies import AccessTokenBearer
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 book_router = APIRouter()
 book_service = BookService()
+access_token_bearer = AccessTokenBearer()
 
 # ----------------- List all the books ----------------- 
 @book_router.get("/", response_model=List[BookModel])
-async def getAllBooks(session: AsyncSession = Depends(get_session)):
+async def getAllBooks(session: AsyncSession = Depends(get_session), user_details=Depends(access_token_bearer)):
     return await book_service.get_all_books(session)
 
 # ----------------- List the book data by id ----------------- 
