@@ -27,7 +27,7 @@ class AccessTokenBearer(HTTPBearer):
         if token_data["refresh"]:
             raise HTTPException(status_code=403, detail="Please provide valid access token")
         
-        return creds
+        return token_data
 
     # token validation
     def token_valid(self, token: str):

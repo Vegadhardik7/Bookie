@@ -18,11 +18,12 @@ access_token_bearer = AccessTokenBearer()
 # ----------------- List all the books ----------------- 
 @book_router.get("/", response_model=List[BookModel])
 async def getAllBooks(session: AsyncSession = Depends(get_session), user_details=Depends(access_token_bearer)):
+    print(f"User details: {user_details}")
     return await book_service.get_all_books(session)
 
 # ----------------- List the book data by id ----------------- 
 @book_router.get("/{book_uid}", status_code=status.HTTP_200_OK)
-async def getBook(book_uid: str,session: AsyncSession = Depends(get_session))->dict:
+async def getBook(book_uid: str,session: AsyncSession = Depends(get_session), user_details=Depends(access_token_bearer))->dict:
     book = await book_service.get_book(book_uid,session)
     if book is not None:
         return {"message": "Book data retrieved successfully", "data": book}
@@ -31,14 +32,14 @@ async def getBook(book_uid: str,session: AsyncSession = Depends(get_session))->d
 
 # ----------------- Insert Book data ----------------- 
 @book_router.post("/createBook", status_code=status.HTTP_201_CREATED, response_model=BookModel)
-async def createBook(newbook: BookCreateModel, session: AsyncSession = Depends(get_session))-> dict:
+async def createBook(newbook: BookCreateModel, session: AsyncSession = Depends(get_session), user_details=Depends(access_token_bearer))-> dict:
     new_book = await book_service.create_book(newbook,session)
     
     return {"message": "Book created successfully", "data": new_book}
 
 # ----------------- Update Books based on User ID ----------------- 
 @book_router.put("/updatebook/{book_uid}", status_code=status.HTTP_200_OK)
-async def updateBook(book_uid: str, book: UpdateBookModel, session: AsyncSession = Depends(get_session)) -> dict:
+async def updateBook(book_uid: str, book: UpdateBookModel, session: AsyncSession = Depends(get_session), user_details=Depends(access_token_bearer)) -> dict:
     updated_book = await book_service.update_book(book_uid, book, session)
     
     if updated_book is not None:
@@ -49,7 +50,7 @@ async def updateBook(book_uid: str, book: UpdateBookModel, session: AsyncSession
 
 # ----------------- delete a user based on id ----------------- 
 @book_router.delete("/delete/{book_uid}", status_code=status.HTTP_200_OK)
-async def deleteBook(book_uid: str, session: AsyncSession = Depends(get_session)):
+async def deleteBook(book_uid: str, session: AsyncSession = Depends(get_session),user_details=Depends(access_token_bearer)):
 
     book_to_delete = await book_service.delete_book(book_uid,session)
     print(f"Book to delete: {book_to_delete}")
