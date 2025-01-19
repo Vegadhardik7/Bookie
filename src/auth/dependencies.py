@@ -24,8 +24,8 @@ class TokenBearer(HTTPBearer):
         
         token_data = decode_access_token(token)
         self.verify_token_data(token_data)
-        
-        return HTTPAuthorizationCredentials(scheme=credentials.scheme, credentials=token)
+
+        return token_data # type: ignore
 
     # validate the token
     def token_valid(self, token: str) -> bool:
