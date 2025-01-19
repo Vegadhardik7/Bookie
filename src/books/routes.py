@@ -24,6 +24,7 @@ async def getAllBooks(session: AsyncSession = Depends(get_session), user_details
 # ----------------- List the book data by id ----------------- 
 @book_router.get("/{book_uid}", status_code=status.HTTP_200_OK)
 async def getBook(book_uid: str,session: AsyncSession = Depends(get_session), user_details=Depends(access_token_bearer))->dict:
+    print(f"User details: {user_details}")
     book = await book_service.get_book(book_uid,session)
     if book is not None:
         return {"message": "Book data retrieved successfully", "data": book}
@@ -33,13 +34,14 @@ async def getBook(book_uid: str,session: AsyncSession = Depends(get_session), us
 # ----------------- Insert Book data ----------------- 
 @book_router.post("/createBook", status_code=status.HTTP_201_CREATED, response_model=BookModel)
 async def createBook(newbook: BookCreateModel, session: AsyncSession = Depends(get_session), user_details=Depends(access_token_bearer))-> dict:
+    print(f"User details: {user_details}")
     new_book = await book_service.create_book(newbook,session)
-    
     return {"message": "Book created successfully", "data": new_book}
 
 # ----------------- Update Books based on User ID ----------------- 
 @book_router.put("/updatebook/{book_uid}", status_code=status.HTTP_200_OK)
 async def updateBook(book_uid: str, book: UpdateBookModel, session: AsyncSession = Depends(get_session), user_details=Depends(access_token_bearer)) -> dict:
+    print(f"User details: {user_details}")
     updated_book = await book_service.update_book(book_uid, book, session)
     
     if updated_book is not None:
@@ -51,7 +53,7 @@ async def updateBook(book_uid: str, book: UpdateBookModel, session: AsyncSession
 # ----------------- delete a user based on id ----------------- 
 @book_router.delete("/delete/{book_uid}", status_code=status.HTTP_200_OK)
 async def deleteBook(book_uid: str, session: AsyncSession = Depends(get_session),user_details=Depends(access_token_bearer)):
-
+    print(f"User details: {user_details}")
     book_to_delete = await book_service.delete_book(book_uid,session)
     print(f"Book to delete: {book_to_delete}")
     if book_to_delete is not None:
