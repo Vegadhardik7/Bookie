@@ -2,10 +2,11 @@ import logging
 from src.db.main import get_session
 from datetime import datetime, timedelta
 from src.auth.service import UserService
+from src.db.redis import add_jti_to_blocklist
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import HTTPException
 from fastapi import APIRouter, Depends, status
-from src.auth.dependencies import RefreshTokenBearer
+from src.auth.dependencies import RefreshTokenBearer, AccessTokenBearer
 from sqlmodel.ext.asyncio.session import AsyncSession
 from src.auth.schemas import UserCreateModel, UserModel, UserLoginModel
 from src.auth.utils import create_access_token, verify_password, generated_pswd_hash
@@ -77,4 +78,10 @@ async def get_new_access_token(token_details:dict=Depends(RefreshTokenBearer()))
     if expire_time_formated > datetime.now():
         new_access_token = create_access_token(user_data=token_details['user'], refresh=False)
         return JSONResponse(content={"message": "Access token refreshed successfully", "access token": new_access_token})
-    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token expired")
+    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Token expired")
+
+@auth_router.get("/logout")
+async def revoke_token(token_details:dict=Depends(AccessTokenBearer())):
+    jti = token_details['jti']
+    await add_jti_to_blocklist(jti=jti)
+    return JSONResponse(content={"message":"Logged Out Successfully"}, status_code=status.HTTP_200_OK)
