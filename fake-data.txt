@@ -1,0 +1,64 @@
+# User:
+{
+    "username": "michael.jackson", 
+    "email": "mj@mj.com", 
+    "password": "thriller", 
+    "first_name": "Michael", 
+    "last_name": "Jackson" 
+},
+{
+    "username": "elon.musk", 
+    "email": "elon@spacex.com", 
+    "password": "tesla", 
+    "first_name": "Elon", 
+    "last_name": "Musk" 
+},
+{
+    "username": "john.doe",
+    "email": "john.doe@example.com",
+    "password": "password123",
+    "first_name": "John",
+    "last_name": "Doe"
+},
+{
+    "username": "alice.wonderland",
+    "email": "alice@wonderland.com",
+    "password": "wonderland",
+    "first_name": "Alice",
+    "last_name": "Wonderland"
+},
+{
+    "username": "bob.marley",
+    "email": "bob.marley@gmail.com",
+    "password": "jamaica",
+    "first_name": "Bob",
+    "last_name": "Marley"
+},
+{
+    "username": "eve.smith",
+    "email": "eve.smith@smithcorp.com",
+    "password": "smith123",
+    "first_name": "Eve",
+    "last_name": "Smith"
+},
+{
+    "username": "david.jones",
+    "email": "david.jones@gmail.com",
+    "password": "david123",
+    "first_name": "David",
+    "last_name": "Jones"
+},
+{
+    "username": "sarah.williams",
+    "email": "sarah.williams@yahoo.com",
+    "password": "sarah123",
+    "first_name": "Sarah",
+    "last_name": "Williams"
+},
+{
+    "username": "albert.einstein",
+    "email": "genius@relativity.com",
+    "password": "formula->e=mc2",
+    "first_name": "Albert",
+    "last_name": "Einstein"
+}

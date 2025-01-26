@@ -5,7 +5,7 @@ from sqlmodel import SQLModel, Field, Column
 
 
 class User(SQLModel, table=True):
-    # __tablename__: str = "users"
+    __tablename__: str = "user"
     
     uid: uuid.UUID = Field(
         sa_column = Column(

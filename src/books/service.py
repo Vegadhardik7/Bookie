@@ -3,7 +3,7 @@
 from sqlmodel.ext.asyncio.session import AsyncSession
 from .schemas import BookCreateModel, UpdateBookModel
 from sqlmodel import select, desc
-from datetime import datetime
+from uuid import UUID
 from .models import BookModel
 from fastapi import HTTPException
 
@@ -23,10 +23,11 @@ class BookService:
 
         return book if book is not None else None
 
-    async def create_book(self, book_data: BookCreateModel,session:AsyncSession):
+    async def create_book(self, book_data: BookCreateModel,user_uid:str,session:AsyncSession):
         # insert into books values (book_data);
         book_data_dict = book_data.model_dump()
         newbook = BookModel(**book_data_dict)
+        newbook.user_uid = UUID(user_uid)
         session.add(newbook)
         await session.commit()
         return newbook

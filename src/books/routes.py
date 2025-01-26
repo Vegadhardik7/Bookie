@@ -22,19 +22,19 @@ role_checker = Depends(RoleChecker(['admin', 'user']))
 @book_router.get("/", response_model=List[BookModel], dependencies=[role_checker])
 async def getAllBooks(
     session: AsyncSession = Depends(get_session), 
-    user_details=Depends(access_token_bearer)
+    token_details: dict = Depends(access_token_bearer)
 ):
     """
     Retrieve all books from the database.
 
     Args:
         session (AsyncSession): Database session for querying.
-        user_details: User details retrieved from the access token.
+        token_details: User details retrieved from the access token.
 
     Returns:
         List[BookModel]: List of all books.
     """
-    print(f"User details: {user_details}")
+    print(f"User details: {token_details}")
     return await book_service.get_all_books(session)
 
 # ----------------- List the book data by ID -----------------
@@ -42,7 +42,7 @@ async def getAllBooks(
 async def getBook(
     book_uid: str, 
     session: AsyncSession = Depends(get_session), 
-    user_details=Depends(access_token_bearer)
+    token_details: dict = Depends(access_token_bearer)
 ) -> dict:
     """
     Retrieve details of a specific book by its unique ID.
@@ -50,7 +50,7 @@ async def getBook(
     Args:
         book_uid (str): Unique identifier of the book.
         session (AsyncSession): Database session for querying.
-        user_details: User details retrieved from the access token.
+        token_details: User details retrieved from the access token.
 
     Returns:
         dict: Success message and book data if found.
@@ -58,7 +58,7 @@ async def getBook(
     Raises:
         HTTPException: If the book with the given ID is not found.
     """
-    print(f"User details: {user_details}")
+    print(f"User details: {token_details}")
     book = await book_service.get_book(book_uid, session)
     if book is not None:
         return {"message": "Book data retrieved successfully", "data": book}
@@ -70,7 +70,7 @@ async def getBook(
 async def createBook(
     newbook: BookCreateModel, 
     session: AsyncSession = Depends(get_session), 
-    user_details=Depends(access_token_bearer)
+    token_details: dict = Depends(access_token_bearer)
 ) -> dict:
     """
     Create a new book in the database.
@@ -78,13 +78,16 @@ async def createBook(
     Args:
         newbook (BookCreateModel): Data for creating a new book.
         session (AsyncSession): Database session for querying.
-        user_details: User details retrieved from the access token.
+        token_details: User details retrieved from the access token.
 
     Returns:
         dict: Success message and details of the newly created book.
     """
-    print(f"User details: {user_details}")
-    new_book = await book_service.create_book(newbook, session)
+    user = token_details.get("user")
+    if user is None:
+        raise HTTPException(status_code=400, detail="User details not found in token")
+    user_uid = user['user_uid']
+    new_book = await book_service.create_book(newbook, user_uid, session)
     return {"message": "Book created successfully", "data": new_book}
 
 # ----------------- Update Books based on User ID -----------------
@@ -93,7 +96,7 @@ async def updateBook(
     book_uid: str, 
     book: UpdateBookModel, 
     session: AsyncSession = Depends(get_session), 
-    user_details=Depends(access_token_bearer)
+    token_details: dict = Depends(access_token_bearer)
 ) -> dict:
     """
     Update details of an existing book by its unique ID.
@@ -102,7 +105,7 @@ async def updateBook(
         book_uid (str): Unique identifier of the book to update.
         book (UpdateBookModel): Updated book data.
         session (AsyncSession): Database session for querying.
-        user_details: User details retrieved from the access token.
+        token_details: User details retrieved from the access token.
 
     Returns:
         dict: Success message and updated book data.
@@ -110,7 +113,7 @@ async def updateBook(
     Raises:
         HTTPException: If the book with the given ID is not found.
     """
-    print(f"User details: {user_details}")
+    print(f"User details: {token_details}")
     updated_book = await book_service.update_book(book_uid, book, session)
     if updated_book is not None:
         return {"message": "Book updated successfully", "data": updated_book}
@@ -122,7 +125,7 @@ async def updateBook(
 async def deleteBook(
     book_uid: str, 
     session: AsyncSession = Depends(get_session), 
-    user_details=Depends(access_token_bearer)
+    token_details: dict = Depends(access_token_bearer)
 ):
     """
     Delete a book from the database by its unique ID.
@@ -130,7 +133,7 @@ async def deleteBook(
     Args:
         book_uid (str): Unique identifier of the book to delete.
         session (AsyncSession): Database session for querying.
-        user_details: User details retrieved from the access token.
+        token_details: User details retrieved from the access token.
 
     Returns:
         JSONResponse: Success message if the book is deleted.
@@ -138,7 +141,7 @@ async def deleteBook(
     Raises:
         HTTPException: If the book with the given ID is not found.
     """
-    print(f"User details: {user_details}")
+    print(f"User details: {token_details}")
     book_to_delete = await book_service.delete_book(book_uid, session)
     print(f"Book to delete: {book_to_delete}")
     if book_to_delete is not None:
