@@ -19,6 +19,7 @@ class User(SQLModel, table=True):
     updated_at: datetime = Field(sa_column=Column(pg.TIMESTAMP, default=datetime.now))
     username: str
     email: str
+    role: str = Field(sa_column=Column(pg.VARCHAR, nullable=False, server_default="user"))
     password: str # = Field(exclude=True) # won't show password in response
     first_name: str
     last_name: str

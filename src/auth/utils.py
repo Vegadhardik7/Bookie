@@ -10,14 +10,10 @@ password_context = CryptContext(schemes=["bcrypt"])
 ACCESS_TOKEN_EXPIRE_MINUTES = 3600
 
 def generated_pswd_hash(password: str) -> str:
-    print(f"********generated password before hash : {password}*******")
     hash =  password_context.hash(password) # returns the hashed password
-    print(f"********generated password after hash : {hash}*******")
     return hash
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    print(f"*****Plain Password: {plain_password}*****")
-    print(f"*****Hashed Password: {plain_password}*****")
     return password_context.verify(plain_password, hashed_password) # returns True if the password matches the hash
 
 def create_access_token(user_data: dict, expiry: Optional[timedelta] = None, refresh: bool = False) -> str:

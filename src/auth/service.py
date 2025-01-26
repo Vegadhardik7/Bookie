@@ -71,6 +71,7 @@ class UserService:
         usr_data_dict = user_data.model_dump()
         new_user = User(**usr_data_dict)
         new_user.password = generated_pswd_hash(user_data.password)  # Hash the user's password
+        new_user.role = "user"
 
         # Add the new user to the database
         session.add(new_user)

@@ -7,20 +7,21 @@ from src.db.redis import add_jti_to_blocklist
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import HTTPException
 from fastapi import APIRouter, Depends, status
-from src.auth.dependencies import RefreshTokenBearer, AccessTokenBearer, get_current_user
 from sqlmodel.ext.asyncio.session import AsyncSession
+from src.auth.utils import create_access_token, verify_password
 from src.auth.schemas import UserCreateModel, UserModel, UserLoginModel
-from src.auth.utils import create_access_token, verify_password, generated_pswd_hash
+from src.auth.dependencies import RefreshTokenBearer, AccessTokenBearer, get_current_user, RoleChecker
 
 # Initialize the router for authentication-related endpoints
 auth_router = APIRouter()
 user_Service = UserService()
+role_checker = RoleChecker(['admin', 'user'])
 
 # Define the expiration time for the refresh token
 REFRESH_TOKEN_EXPIRY = timedelta(days=2)
 
 @auth_router.get("/users", response_model=list[UserModel])
-async def get_all_users(session: AsyncSession = Depends(get_session)):
+async def get_all_users(session: AsyncSession = Depends(get_session), _ : bool= Depends(role_checker)):
     """
     Fetch all users from the database.
     Args:
@@ -78,7 +79,9 @@ async def login_user(login_data: UserLoginModel, session: AsyncSession = Depends
         password_valid = verify_password(password, user.password)
 
         if password_valid:
-            access_token = create_access_token(user_data={"email": user.email, "user_uid": str(user.uid)})
+            access_token = create_access_token(user_data={"email": user.email, 
+                                                          "user_uid": str(user.uid), 
+                                                          "role":user.role})
             refresh_token = create_access_token(
                 user_data={"email": user.email, "user_uid": str(user.uid)}, 
                 refresh=True, 
@@ -114,7 +117,7 @@ async def get_new_access_token(token_details: dict = Depends(RefreshTokenBearer(
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Token expired")
 
 @auth_router.get("/me", response_model=UserModel)
-async def get_me(user: User = Depends(get_current_user)):
+async def get_me(user: User = Depends(get_current_user), _ : bool= Depends(role_checker)):
     """
     Get details of the currently authenticated user.
     Args:
