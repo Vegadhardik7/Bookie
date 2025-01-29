@@ -9,7 +9,7 @@ from fastapi.exceptions import HTTPException
 from fastapi import APIRouter, Depends, status
 from sqlmodel.ext.asyncio.session import AsyncSession
 from src.auth.utils import create_access_token, verify_password
-from src.auth.schemas import UserCreateModel, UserModel, UserLoginModel
+from src.auth.schemas import UserCreateModel, UserModel, UserLoginModel, UserBooksModel
 from src.auth.dependencies import RefreshTokenBearer, AccessTokenBearer, get_current_user, RoleChecker
 
 # Initialize the router for authentication-related endpoints
@@ -36,7 +36,7 @@ async def get_all_users(session: AsyncSession = Depends(get_session), _ : bool= 
         logging.error(f"Error fetching users: {e}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal Server Error")
 
-@auth_router.post("/signup", status_code=status.HTTP_201_CREATED)
+@auth_router.post("/signup", response_model=UserModel, status_code=status.HTTP_201_CREATED)
 async def create_user_account(user_data: UserCreateModel, session: AsyncSession = Depends(get_session)):
     """
     Create a new user account.
@@ -116,7 +116,7 @@ async def get_new_access_token(token_details: dict = Depends(RefreshTokenBearer(
         return JSONResponse(content={"message": "Access token refreshed successfully", "access token": new_access_token})
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Token expired")
 
-@auth_router.get("/me", response_model=UserModel)
+@auth_router.get("/me", response_model=UserBooksModel)
 async def get_me(user: User = Depends(get_current_user), _ : bool= Depends(role_checker)):
     """
     Get details of the currently authenticated user.

@@ -1,8 +1,10 @@
+import uuid
 from typing import Optional
+from src.auth import models
 from datetime import datetime, date
 import sqlalchemy.dialects.postgresql as pg
-from sqlmodel import SQLModel, Field, Column
-import uuid
+from sqlmodel import SQLModel, Field, Column, Relationship
+
 
 # Create Book
 class BookModel(SQLModel, table=True):
@@ -25,6 +27,7 @@ class BookModel(SQLModel, table=True):
     language: Optional[str] = "English"
     published_date: Optional[date] = None
     user_uid: Optional[uuid.UUID] = Field(default=None, foreign_key="user.uid")
-    
+    user: Optional["models.User"] = Relationship(back_populates="books")
+
     def __repr__(self):
         return f"BookModel({self.title}, {self.author}, {self.publisher}, {self.page_count}, {self.language}, {self.published_date})"

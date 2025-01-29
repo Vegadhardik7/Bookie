@@ -37,6 +37,27 @@ async def getAllBooks(
     print(f"User details: {token_details}")
     return await book_service.get_all_books(session)
 
+# ----------------- List all the books added by a specific user -----------------
+@book_router.get("/user/{user_uid}", response_model=List[BookModel], dependencies=[role_checker])
+async def get_user_book_submissions(
+    user_uid : str,
+    session: AsyncSession = Depends(get_session), 
+    token_details: dict = Depends(access_token_bearer)
+):
+    """
+    Retrieve all books from the database created by a perticular user.
+
+    Args:
+        session (AsyncSession): Database session for querying.
+        user_id: UID of the user who has inserted data of the books.
+        token_details: User details retrieved from the access token.
+
+    Returns:
+        List[BookModel]: List of all books added by that perticular user.
+    """
+    print(f"User details: {token_details}")
+    return await book_service.get_user_books(user_uid, session)
+
 # ----------------- List the book data by ID -----------------
 @book_router.get("/{book_uid}", status_code=status.HTTP_200_OK, dependencies=[role_checker])
 async def getBook(

@@ -1,7 +1,9 @@
 import uuid
+from typing import List
+from src.books import models
 from datetime import datetime
 import sqlalchemy.dialects.postgresql as pg
-from sqlmodel import SQLModel, Field, Column
+from sqlmodel import SQLModel, Field, Column, Relationship
 
 
 class User(SQLModel, table=True):
@@ -24,6 +26,8 @@ class User(SQLModel, table=True):
     first_name: str
     last_name: str
     is_verified: bool = Field(default=False)
+    books: List["models.BookModel"] = Relationship(back_populates="user",sa_relationship_kwargs={"lazy":"selectin"})
+
 
     """ String representation of the User object """
     def __repr__(self):

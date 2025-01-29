@@ -1,7 +1,7 @@
 import uuid
 from typing import Optional
 from datetime import datetime, date
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel
 
 # Create Book
 class BookModel(BaseModel):

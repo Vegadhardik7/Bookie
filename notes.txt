@@ -18,3 +18,6 @@ the changes we have been able to do on our DB with time.
 inside a file. That file will be called as the version file and inside that file will be the changes to the structure of
 the db that we are suggesting and onces we have been able to suggest those changes then we shall finally go ahead and make
 those changes refect within our database.
+
+- Lazy loading available via lazy="select" or the lazyload() option, this is the form of loading that emits a SELECT statement at
+attribute access time to lazily load a related reference on a single at a time. Lazy loading is detailed at lazy loading.

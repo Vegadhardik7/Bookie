@@ -1,7 +1,9 @@
 import uuid
 import datetime
+from typing import List, Optional
 from sqlmodel import Field
 from pydantic import BaseModel
+from src.books.schemas import BookModel
 
 class UserCreateModel(BaseModel):
     username: str = Field(max_length=50)
@@ -20,6 +22,9 @@ class UserModel(BaseModel):
     password: str = Field(exclude=True)  # Exclude password from response
     created_at : datetime.datetime
     updated_at : datetime.datetime
+
+class UserBooksModel(UserModel):
+    books : Optional[List[BookModel]] = None
 
 class UserLoginModel(BaseModel):
     email: str
