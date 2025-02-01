@@ -1,5 +1,5 @@
 import logging
-from src.auth.models import User
+from src.db.models import User
 from src.db.main import get_session
 from datetime import datetime, timedelta
 from src.auth.service import UserService
