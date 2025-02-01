@@ -54,7 +54,7 @@ class BookModel(SQLModel, table=True):
     language: Optional[str] = "English"
     published_date: Optional[date] = None
     user_uid: Optional[uuid.UUID] = Field(default=None, foreign_key="user.uid")
-    user: Optional["User"] = Relationship(back_populates="books")
+    user: Optional[User] = Relationship(back_populates="books")
 
     def __repr__(self):
         return f"BookModel({self.title}, {self.author}, {self.publisher}, {self.page_count}, {self.language}, {self.published_date})"
