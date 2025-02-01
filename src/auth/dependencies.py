@@ -1,4 +1,4 @@
-from .models import User
+from src.db.models import User
 from typing import List, Any
 from .service import UserService
 from src.db.main import get_session

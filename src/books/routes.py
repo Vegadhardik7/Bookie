@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from typing import List
 from sqlmodel.ext.asyncio.session import AsyncSession
 from src.books.schemas import BookModel, BookCreateModel, UpdateBookModel
-from src.books.models import BookModel
+from src.db.models import BookModel
 from src.books.service import BookService
 from src.db.main import get_session
 from src.auth.dependencies import AccessTokenBearer, RoleChecker

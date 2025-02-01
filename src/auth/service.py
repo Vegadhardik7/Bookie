@@ -1,5 +1,5 @@
 import logging
-from src.auth.models import User
+from src.db.models import User
 from src.auth.schemas import UserCreateModel
 from src.auth.utils import generated_pswd_hash
 from sqlmodel.ext.asyncio.session import AsyncSession
