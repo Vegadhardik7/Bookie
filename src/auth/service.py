@@ -20,10 +20,10 @@ class UserService:
         Returns:
             List of all users.
         """
-        async with session.begin():
-            statement = select(User)
-            result = await session.exec(statement)
-            return result.all()
+        # async with session.begin():
+        statement = select(User)
+        result = await session.exec(statement)
+        return result.all()
 
     async def get_user_by_email(self, email: str, session: AsyncSession):
         """
@@ -34,11 +34,11 @@ class UserService:
         Returns:
             The user object if found, otherwise None.
         """
-        async with session.begin():
-            statement = select(User).where(User.email == email)
-            result = await session.exec(statement)
-            usr = result.first()
-            return usr
+        # async with session.begin():
+        statement = select(User).where(User.email == email)
+        result = await session.exec(statement)
+        usr = result.first()
+        return usr
     
     async def user_exists(self, email: str, session: AsyncSession):
         """
