@@ -3,6 +3,7 @@ import datetime
 from typing import List, Optional
 from sqlmodel import Field
 from pydantic import BaseModel
+from src.reviews.schemas import ReviewModel
 from src.books.schemas import BookModel
 
 class UserCreateModel(BaseModel):
@@ -25,6 +26,7 @@ class UserModel(BaseModel):
 
 class UserBooksModel(UserModel):
     books : Optional[List[BookModel]] = None
+    reviews: List[ReviewModel]
 
 class UserLoginModel(BaseModel):
     email: str

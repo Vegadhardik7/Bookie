@@ -21,3 +21,56 @@ those changes refect within our database.
 
 - Lazy loading available via lazy="select" or the lazyload() option, this is the form of loading that emits a SELECT statement at
 attribute access time to lazily load a related reference on a single at a time. Lazy loading is detailed at lazy loading.
+
+-------------------------------------------------------------------------------------------------------------
+
+# Connect to the psql
+
+Connect to PostgreSQL: psql -U username -d bookie
+Switch to the bookie database: \c bookie
+List Tables in the bookie Database:  \dt
+View Data: SELECT * FROM table_name LIMIT 10;
+Explore Database Schema: \d table_name
+Exit: \q
+--------------------------------------------------------------------------------------------------------------
+# Install wsl in windows:
+
+open powershell> wsl --install > restart > wsl -l -v
+
+--------------------------------------------------------------------------------------------------------------
+# Install redis in windows:
+
+open ubuntu app in windows > follow this commands
+
+wsl --install
+
+wsl -l -v
+
+curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
+
+echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
+
+sudo apt-get update
+sudo apt-get install redis
+
+sudo service redis-server start
+
+redis-cli 
+
+--------------------------------------------------------------------------------------------------------------
+# Start Redis Server:
+
+    2  ls /home
+    3  passwd hardikvegad
+    4  redis -v
+    5  redis-server -v
+    6  redis-cli ping
+    7  sudo systemctl status redis
+    8  systemctl status redis
+    9  sudo apt update
+   10  sudo apt install redis-server
+   11  sudo systemctl start redis-server
+   12  sudo systemctl enable redis-server
+   13  sudo systemctl status redis-server
+   14  redis-cli ping
+--------------------------------------------------------------------------------------------------------------

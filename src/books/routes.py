@@ -2,7 +2,7 @@ from fastapi import APIRouter, status, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from typing import List
 from sqlmodel.ext.asyncio.session import AsyncSession
-from src.books.schemas import BookModel, BookCreateModel, UpdateBookModel
+from src.books.schemas import BookModel, BookCreateModel, UpdateBookModel, BookDetailModel
 from src.db.models import BookModel
 from src.books.service import BookService
 from src.db.main import get_session
@@ -59,7 +59,7 @@ async def get_user_book_submissions(
     return await book_service.get_user_books(user_uid, session)
 
 # ----------------- List the book data by ID -----------------
-@book_router.get("/{book_uid}", status_code=status.HTTP_200_OK, dependencies=[role_checker])
+@book_router.get("/{book_uid}", response_model=BookDetailModel, dependencies=[role_checker])
 async def getBook(
     book_uid: str, 
     session: AsyncSession = Depends(get_session), 
@@ -112,7 +112,7 @@ async def createBook(
     return {"message": "Book created successfully", "data": new_book}
 
 # ----------------- Update Books based on User ID -----------------
-@book_router.put("/updatebook/{book_uid}", status_code=status.HTTP_200_OK, dependencies=[role_checker])
+@book_router.patch("/updatebook/{book_uid}", status_code=status.HTTP_200_OK, dependencies=[role_checker])
 async def updateBook(
     book_uid: str, 
     book: UpdateBookModel, 
