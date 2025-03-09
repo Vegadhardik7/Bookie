@@ -206,6 +206,154 @@ Auth Routes
   - Calls `revoke_token` function in `auth/routers.py`.
   - Uses `add_jti_to_blocklist` utility to revoke the token.
 
+## Starting Point
+
+## FastAPI Application Initialization (__init__.py)
+**File:** __init__.py  
+
+**Description:** This is where the FastAPI application is created and configured. It includes routers for different parts of the application (books, reviews, and authentication) and manages the application's lifespan.  
+
+**Key Points:**
+- Understand how the FastAPI application is initialized.
+- Learn how routers are included in the application.
+- Familiarize yourself with the lifespan event for initializing and closing the database connection.
+
+## Flow Progression
+
+### Routers and Endpoints
+
+#### Books Router (books/routes.py)
+**File:** routes.py  
+
+**Description:** Defines endpoints for book-related operations.  
+
+**Key Points:**
+- Study each endpoint and its corresponding function.
+- Understand how each endpoint interacts with the `BookService` to perform CRUD operations on books.
+
+#### Reviews Router (reviews/routes.py)
+**File:** routes.py  
+
+**Description:** Defines endpoints for review-related operations.  
+
+**Key Points:**
+- Study the endpoint for adding reviews to books.
+- Understand how the endpoint interacts with the `ReviewService` to add reviews.
+
+#### Auth Router (auth/routers.py)
+**File:** routers.py  
+
+**Description:** Defines endpoints for authentication-related operations.  
+
+**Key Points:**
+- Study each endpoint and its corresponding function.
+- Understand how each endpoint interacts with the `UserService` to handle user authentication and management.
+
+### Service Classes
+
+#### Book Service (books/service.py)
+**File:** service.py  
+
+**Description:** Contains the business logic for book-related operations.  
+
+**Key Points:**
+- Study the methods in the `BookService` class.
+- Understand how each method interacts with the database to perform CRUD operations on books.
+
+#### Review Service (reviews/service.py)
+**File:** service.py  
+
+**Description:** Contains the business logic for review-related operations.  
+
+**Key Points:**
+- Study the method for adding reviews to books.
+- Understand how the method interacts with the database to add reviews.
+
+#### Auth Service (auth/service.py)
+**File:** service.py  
+
+**Description:** Contains the business logic for authentication-related operations.  
+
+**Key Points:**
+- Study the methods in the `UserService` class.
+- Understand how each method interacts with the database to handle user authentication and management.
+
+### Schemas
+
+#### Book Schemas (books/schemas.py)
+**File:** schemas.py  
+
+**Description:** Defines Pydantic models for book-related data.  
+
+**Key Points:**
+- Study the Pydantic models and their fields.
+- Understand how these models are used for request validation and response formatting.
+
+#### Review Schemas (reviews/schemas.py)
+**File:** schemas.py  
+
+**Description:** Defines Pydantic models for review-related data.  
+
+**Key Points:**
+- Study the Pydantic models and their fields.
+- Understand how these models are used for request validation and response formatting.
+
+#### Auth Schemas (auth/schemas.py)
+**File:** schemas.py  
+
+**Description:** Defines Pydantic models for authentication-related data.  
+
+**Key Points:**
+- Study the Pydantic models and their fields.
+- Understand how these models are used for request validation and response formatting.
+
+### Database Models and Configuration
+
+#### Database Models (db/models.py)
+**File:** models.py  
+
+**Description:** Defines SQLAlchemy models for the database.  
+
+**Key Points:**
+- Study the models for User, Book, and Review.
+- Understand how these models represent the database tables and their relationships.
+
+#### Database Configuration (db/main.py)
+**File:** main.py  
+
+**Description:** Manages the database connection and session.  
+
+**Key Points:**
+- Understand how the database engine and session are configured.
+- Learn how the database is initialized.
+
+#### Redis Configuration (db/redis.py)
+**File:** redis.py  
+
+**Description:** Handles Redis client setup and operations for managing token blocklists and roles.  
+
+**Key Points:**
+- Study the functions for adding and checking tokens in the blocklist.
+- Understand how Redis is used for token management.
+
+### Custom Errors
+
+#### Custom Errors (errors.py)
+**File:** errors.py  
+
+**Description:** Defines custom error classes for the application.  
+
+**Key Points:**
+- Study the custom error classes.
+- Understand how these errors are used to handle specific error cases.
+
+## Study Flow
+1. Start with `__init__.py`: Understand how the FastAPI application is initialized and how routers are included.
+2. Move to Routers: Study the routes in `books/routes.py`, `reviews/routes.py`, and `auth/routers.py`. Understand the endpoints and their functionalities.
+3. Explore Service Classes: Dive into the service classes in `books/service.py`, `reviews/service.py`, and `auth/service.py`. Understand the business logic for each operation.
+4. Review Schemas: Study the Pydantic models in `books/schemas.py`, `reviews/schemas.py`, and `auth/schemas.py`. Understand how data validation and formatting are handled.
+5. Examine Database Models and Configuration: Look into `db/models.py`, `db/main.py`, and `db/redis.py`. Understand how the database and Redis are configured and managed.
+6. Understand Custom Errors: Review `errors.py` to understand how custom errors are defined and used.
 
 
 
