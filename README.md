@@ -355,6 +355,62 @@ Auth Routes
 5. Examine Database Models and Configuration: Look into `db/models.py`, `db/main.py`, and `db/redis.py`. Understand how the database and Redis are configured and managed.
 6. Understand Custom Errors: Review `errors.py` to understand how custom errors are defined and used.
 
+# ERD Diagram Representation (ASCII)
+```
++-----------------+     +-----------------+     +-----------------+
+|     Users      |     |     Books       |     |    Reviews      |
++-----------------+     +-----------------+     +-----------------+
+| user_uid (PK)  |<---+| book_uid (PK)   |     | review_uid (PK) |
+| username       |     | title           |     | book_uid (FK)   |
+| email          |     | author          |     | user_uid (FK)   |
+| password_hash  |     | user_uid (FK)   |     | rating          |
+| created_at     |     | created_at      |     | review_text     |
++-----------------+     +-----------------+     | created_at      |
+                                                +-----------------+
+```
+## Users (users)
+- **user_uid** (Primary Key, UUID)
+- **username** (Unique)
+- **email** (Unique)
+- **password_hash**
+- **created_at**
+- **updated_at**
+
+### Relationships:
+- One user can create multiple books (1:N with books).
+- One user can write multiple reviews (1:N with reviews).
+
+## Books (books)
+- **book_uid** (Primary Key, UUID)
+- **title**
+- **author**
+- **description**
+- **user_uid** (Foreign Key → users.user_uid) (creator of the book)
+- **created_at**
+- **updated_at**
+
+### Relationships:
+- One book can have multiple reviews (1:N with reviews).
+- Each book is submitted by one user (N:1 with users).
+
+## Reviews (reviews)
+- **review_uid** (Primary Key, UUID)
+- **book_uid** (Foreign Key → books.book_uid)
+- **user_uid** (Foreign Key → users.user_uid)
+- **rating** (Integer)
+- **review_text**
+- **created_at**
+- **updated_at**
+
+### Relationships:
+- Each review is written by one user (N:1 with users).
+- Each review is for one book (N:1 with books).
+
+## Auth Tokens (Optional, if stored in DB) (tokens)
+- **token_id** (Primary Key)
+- **user_uid** (Foreign Key → users.user_uid)
+- **refresh_token**
+- **expires_at**
 
 
 ### Bearer Token Autorization:
