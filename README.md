@@ -34,6 +34,7 @@ Bookie/
 
 ### 1. FastAPI Application Initialization (__init__.py)
 **File:** __init__.py
+
 **Description:** Sets up the FastAPI application, includes routers for books, reviews, and authentication, and manages the application's lifespan.
 ```
 FastAPI Application Initialization
@@ -45,6 +46,7 @@ FastAPI Application Initialization
 
 ### 2. Book Routes (books/routes.py)
 **File:** routes.py
+
 **Description:** Defines endpoints for book-related operations.
 ```
 Book Routes
@@ -76,6 +78,7 @@ Book Routes
 
 ### 3. Review Routes (reviews/routes.py)
 **File:** routes.py
+
 **Description:** Defines endpoints for review-related operations.
 ```
 Review Routes
@@ -87,6 +90,7 @@ Review Routes
 
 ### 4. Auth Routes (auth/routers.py)
 **File:** routers.py
+
 **Description:** Defines endpoints for authentication-related operations.
 ```
 Auth Routes
