@@ -27,7 +27,7 @@ async def add_jti_to_blocklist(jti: str) -> None:
     an expiration time defined by `JTI_EXPIRY_SECONDS`.
     """
     async with aioredis.from_url(f"redis://{Config.REDIS_HOST}:{Config.REDIS_PORT}") as redis:
-        await redis.set(name=jti, value="", ex=JTI_EXPIRY_SECONDS)
+        await redis.set(name=jti, value="", ex=JTI_EXPIRY_SECONDS)  # Set the JTI in Redis with an expiration time.
 
 async def token_in_blocklist(jti: str) -> bool:
     """
@@ -40,7 +40,7 @@ async def token_in_blocklist(jti: str) -> bool:
         bool: True if the JTI is in the blocklist, False otherwise.
     """
     async with aioredis.from_url(f"redis://{Config.REDIS_HOST}:{Config.REDIS_PORT}") as redis:
-        return await redis.exists(jti) > 0
+        return await redis.exists(jti) > 0  # Check if the JTI exists in Redis.
 
 # Role-Based Access Definitions
 
@@ -60,4 +60,3 @@ async def token_in_blocklist(jti: str) -> bool:
         * CRUD operations on their own reviews
         * Manage their own account details
 """
-

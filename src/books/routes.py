@@ -1,12 +1,20 @@
-from fastapi import APIRouter, status, Depends, HTTPException
-from fastapi.responses import JSONResponse
-from typing import List
-from sqlmodel.ext.asyncio.session import AsyncSession
-from src.books.schemas import BookModel, BookCreateModel, UpdateBookModel, BookDetailModel
-from src.db.models import BookModel
-from src.books.service import BookService
-from src.db.main import get_session
-from src.auth.dependencies import AccessTokenBearer, RoleChecker
+"""
+This file defines the book-related routes for the FastAPI application.
+It includes endpoints for listing all books, listing books by a specific user, retrieving book details by ID,
+creating a new book, updating an existing book, and deleting a book.
+These routes use custom dependencies for token validation and role-based access control to ensure that
+only authorized users can access certain endpoints.
+"""
+
+from fastapi import APIRouter, status, Depends, HTTPException  # Import FastAPI utilities for routing, status codes, dependencies, and HTTP exceptions.
+from fastapi.responses import JSONResponse  # Import JSONResponse for sending JSON responses.
+from typing import List  # Import List for type annotations.
+from sqlmodel.ext.asyncio.session import AsyncSession  # Import the AsyncSession class for asynchronous database sessions.
+from src.books.schemas import BookModel, BookCreateModel, UpdateBookModel, BookDetailModel  # Import Pydantic models for request and response validation.
+from src.db.models import BookModel  # Import the BookModel from the database models.
+from src.books.service import BookService  # Import the BookService class for book-related business logic.
+from src.db.main import get_session  # Import the get_session function for database session management.
+from src.auth.dependencies import AccessTokenBearer, RoleChecker  # Import custom dependencies for token validation and role-based access control.
 
 # Initialize FastAPI Router for books
 book_router = APIRouter()
@@ -45,15 +53,15 @@ async def get_user_book_submissions(
     token_details: dict = Depends(access_token_bearer)
 ):
     """
-    Retrieve all books from the database created by a perticular user.
+    Retrieve all books from the database created by a particular user.
 
     Args:
         session (AsyncSession): Database session for querying.
-        user_id: UID of the user who has inserted data of the books.
+        user_uid: UID of the user who has inserted data of the books.
         token_details: User details retrieved from the access token.
 
     Returns:
-        List[BookModel]: List of all books added by that perticular user.
+        List[BookModel]: List of all books added by that particular user.
     """
     print(f"User details: {token_details}")
     return await book_service.get_user_books(user_uid, session)

@@ -1,21 +1,28 @@
-import logging
-from src.db.models import User
-from src.db.main import get_session
-from datetime import datetime, timedelta
-from src.auth.service import UserService
-from src.db.redis import add_jti_to_blocklist
-from fastapi.responses import JSONResponse
-from fastapi.exceptions import HTTPException
-from fastapi import APIRouter, Depends, status
-from sqlmodel.ext.asyncio.session import AsyncSession
-from src.auth.utils import create_access_token, verify_password
-from src.auth.schemas import UserCreateModel, UserModel, UserLoginModel, UserBooksModel
-from src.auth.dependencies import RefreshTokenBearer, AccessTokenBearer, get_current_user, RoleChecker
+"""
+This file defines the authentication-related routes for the FastAPI application.
+It includes endpoints for user signup, login, token refresh, fetching user details, and logout.
+These routes use custom dependencies for token validation and user authentication to ensure that
+only authorized users can access certain endpoints.
+"""
+
+import logging  # Import logging module for logging errors and information.
+from src.db.models import User  # Import the User model from the database models.
+from src.db.main import get_session  # Import the get_session function for database session management.
+from datetime import datetime, timedelta  # Import datetime and timedelta for handling date and time operations.
+from src.auth.service import UserService  # Import the UserService class for user-related business logic.
+from src.db.redis import add_jti_to_blocklist  # Import the add_jti_to_blocklist function for adding tokens to the blocklist.
+from fastapi.responses import JSONResponse  # Import JSONResponse for sending JSON responses.
+from fastapi.exceptions import HTTPException  # Import HTTPException for raising HTTP exceptions.
+from fastapi import APIRouter, Depends, status  # Import FastAPI utilities for routing, dependencies, and status codes.
+from sqlmodel.ext.asyncio.session import AsyncSession  # Import the AsyncSession class for asynchronous database sessions.
+from src.auth.utils import create_access_token, verify_password  # Import utility functions for token creation and password verification.
+from src.auth.schemas import UserCreateModel, UserModel, UserLoginModel, UserBooksModel  # Import Pydantic models for request and response validation.
+from src.auth.dependencies import RefreshTokenBearer, AccessTokenBearer, get_current_user, RoleChecker  # Import custom dependencies for token validation and user authentication.
 
 # Initialize the router for authentication-related endpoints
 auth_router = APIRouter()
-user_Service = UserService()
-role_checker = RoleChecker(['admin', 'user'])
+user_Service = UserService()  # Create an instance of the UserService class for user-related business logic.
+role_checker = RoleChecker(['admin', 'user'])  # Create an instance of the RoleChecker class to check user roles.
 
 # Define the expiration time for the refresh token
 REFRESH_TOKEN_EXPIRY = timedelta(days=2)

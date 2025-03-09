@@ -1,16 +1,30 @@
-from src.db.models import User
-from typing import List, Any
-from .service import UserService
-from src.db.main import get_session
-from fastapi import Request, Depends
-from fastapi.security import HTTPBearer
-from src.db.redis import token_in_blocklist
-from fastapi.exceptions import HTTPException
-from src.auth.utils import decode_access_token
-from sqlmodel.ext.asyncio.session import AsyncSession
-from fastapi.security.http import HTTPAuthorizationCredentials
+"""
+This file is important because it defines custom dependencies for token validation and user authentication.
+It includes custom classes for validating access and refresh tokens, as well as dependencies for fetching the
+currently authenticated user and checking user roles. These dependencies are used to protect routes and ensure
+that only authorized users can access certain endpoints.
+"""
 
-user_service = UserService()
+from src.errors import (  # Import custom error classes for handling various authentication and authorization errors.
+    InvalidToken, 
+    RevokedToken, 
+    AccessTokenRequired, 
+    RefreshTokenRequired, 
+    InsufficientPermission,
+    UserNotFound,
+)
+from src.db.models import User  # Import the User model from the database models.
+from typing import List, Any  # Import typing utilities for type annotations.
+from .service import UserService  # Import the UserService class for user-related business logic.
+from src.db.main import get_session  # Import the get_session function for database session management.
+from fastapi import Request, Depends  # Import FastAPI utilities for handling requests and dependencies.
+from fastapi.security import HTTPBearer  # Import the HTTPBearer class for handling HTTP Bearer authentication.
+from src.db.redis import token_in_blocklist  # Import the token_in_blocklist function for checking if a token is in the blocklist.
+from src.auth.utils import decode_access_token  # Import the decode_access_token function for decoding JWT tokens.
+from sqlmodel.ext.asyncio.session import AsyncSession  # Import the AsyncSession class for asynchronous database sessions.
+from fastapi.security.http import HTTPAuthorizationCredentials  # Import the HTTPAuthorizationCredentials class for handling HTTP authorization credentials.
+
+user_service = UserService()  # Create an instance of the UserService class for user-related business logic.
 
 # Custom TokenBearer class to validate tokens
 class TokenBearer(HTTPBearer):
@@ -32,29 +46,23 @@ class TokenBearer(HTTPBearer):
         credentials = await super().__call__(request)
         
         if credentials is None:
-            raise HTTPException(status_code=403, detail="Invalid authentication credentials")
+            raise InvalidToken()
         
         token = credentials.credentials  # Extract the token
 
         if token is None:
-            raise HTTPException(status_code=403, detail="Please provide an access token")
+            raise AccessTokenRequired()
 
         # Check if the token is valid
         if not self.token_valid(token):
-            raise HTTPException(status_code=403, detail={
-                "error": "Token is invalid or expired", 
-                "resolution": "Please get a new token"
-            })
+            raise InvalidToken()
         
         # Decode the token to get token data
         token_data = decode_access_token(token)
 
         # Check if the token is in the blocklist (revoked or blacklisted)
         if await token_in_blocklist(token_data["jti"]):
-            raise HTTPException(status_code=403, detail={
-                "error": "Token is invalid or has been revoked", 
-                "resolution": "Please get a new token"
-            })
+            raise RevokedToken()
 
         # Verify token-specific data (to be implemented by child classes)
         self.verify_token_data(token_data)
@@ -84,10 +92,10 @@ class AccessTokenBearer(TokenBearer):
         """
         Verify the token data to ensure it's an access token.
         :param token_data: Decoded token data.
-        :raises HTTPException: If the token is not an access token.
+        :raises AccessTokenRequired: If the token is not an access token.
         """
         if token_data and token_data["refresh"]:
-            raise HTTPException(status_code=403, detail="Provide valid access token")
+            raise AccessTokenRequired()
         
 # Custom class for validating refresh tokens
 class RefreshTokenBearer(TokenBearer):
@@ -95,10 +103,10 @@ class RefreshTokenBearer(TokenBearer):
         """
         Verify the token data to ensure it's a refresh token.
         :param token_data: Decoded token data.
-        :raises HTTPException: If the token is not a refresh token.
+        :raises RefreshTokenRequired: If the token is not a refresh token.
         """
         if token_data and not token_data["refresh"]:
-            raise HTTPException(status_code=403, detail="Provide valid refresh token")
+            raise RefreshTokenRequired()
 
 # Dependency to fetch the currently authenticated user
 async def get_current_user(token_details: dict = Depends(AccessTokenBearer()), 
@@ -108,13 +116,16 @@ async def get_current_user(token_details: dict = Depends(AccessTokenBearer()),
     :param token_details: Decoded token data from the access token.
     :param session: Database session (AsyncSession).
     :return: The user object corresponding to the token's email.
-    :raises HTTPException: If the user does not exist in the database.
+    :raises UserNotFound: If the user does not exist in the database.
     """
     # Extract user email from the token details
     user_email = token_details['user']['email']
     
     # Fetch the user object from the database
     user = await user_service.get_user_by_email(user_email, session)
+    
+    if not user:
+        raise UserNotFound()
     
     # Return the user object
     return user
@@ -127,4 +138,4 @@ class RoleChecker:
     def __call__(self, current_user: User = Depends(get_current_user)) -> Any:
         if current_user.role in self.allowed_roles:
             return True
-        raise HTTPException(status_code=403, detail="Access Denied. You are not permitted to perform this action.")
+        raise InsufficientPermission()
