@@ -357,16 +357,34 @@ Auth Routes
 
 # ERD Diagram Representation (ASCII)
 ```
-+-----------------+     +-----------------+     +-----------------+
-|     Users      |     |     Books       |     |    Reviews      |
-+-----------------+     +-----------------+     +-----------------+
-| user_uid (PK)  |<---+| book_uid (PK)   |     | review_uid (PK) |
-| username       |     | title           |     | book_uid (FK)   |
-| email          |     | author          |     | user_uid (FK)   |
-| password_hash  |     | user_uid (FK)   |     | rating          |
-| created_at     |     | created_at      |     | review_text     |
-+-----------------+     +-----------------+     | created_at      |
-                                                +-----------------+
++------------------+       +------------------+       +------------------+
+|      Users       |       |      Books       |       |     Reviews      |
++------------------+       +------------------+       +------------------+
+| uid (PK)         |<------| user_uid (FK)    |       | uid (PK)         |
+| username         |       | uid (PK)         |<------| book_uid (FK)    |
+| email            |       | title            |       | content          |
+| password_hash    |<------| author           |       | rating           |
+| created_at       |       | description      |       | user_uid (FK)    |
+| updated_at       |       | price            |       | created_at       |
++------------------+       | image_url        |       | updated_at       |
+                           | created_at       |       +------------------+
+                           | updated_at       |
+                           +------------------+
+
+
+
+Users (1) ----< Books (N)
+  |
+  |
+  +-----< Reviews (N)
+          |
+          |
+Books (1) +
+
+Legend:
+(1) = One
+(N) = Many
+< = Direction of relationship
 ```
 ## Users (users)
 - **user_uid** (Primary Key, UUID)
