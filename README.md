@@ -1,7 +1,3 @@
-### Bearer Token Autorization:
-
-![image](https://github.com/user-attachments/assets/ad46ce0e-709a-4f07-8545-0159b2f195fc)
-
 # Project Folder & File Structure
 
 ```
@@ -31,3 +27,7 @@ Bookie/
 │   └── __init__.py              # FastAPI application setup and router inclusion
 └── README.md                    # Project documentation file
 ```
+
+### Bearer Token Autorization:
+
+![image](https://github.com/user-attachments/assets/ad46ce0e-709a-4f07-8545-0159b2f195fc)
